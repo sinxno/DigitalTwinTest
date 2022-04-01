@@ -5,10 +5,10 @@ using UnityEngine;
 public class ShowInstrumentUI : MonoBehaviour
 {
     public WindowGraph graphUI;
-    public void ShowUI(Instrument instrument, List<Measurement> measurements)
+    public void ShowUI(Instrument instrument)
     {
         
-        graphUI.CreateGraph(measurements, instrument);
+        graphUI.CreateGraph(instrument);
 
     }
 

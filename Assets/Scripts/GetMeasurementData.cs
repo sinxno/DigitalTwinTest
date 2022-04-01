@@ -12,7 +12,6 @@ public class GetMeasurementData : MonoBehaviour
 
     private Instrument instrument;
     private string url;
-    private List<Measurement> measurementList = new List<Measurement>();
     private ShowInstrumentUI showInstrumentUI;
 
     void Start()//Bruker start fordi Awake kjører før start. hvis vi bruker start her er det ikke sikkert instrument objektet er opprettet.
@@ -27,7 +26,7 @@ public class GetMeasurementData : MonoBehaviour
     {
         string[] responseLines = GetMeasurementsFromDatabase();
         AddMeasurementsToMeasurementList(responseLines);
-        showInstrumentUI.ShowUI(instrument, measurementList);
+        showInstrumentUI.ShowUI(instrument);
     }
 
     private void OnTriggerExit(Collider other)
@@ -48,7 +47,7 @@ public class GetMeasurementData : MonoBehaviour
 
     private void AddMeasurementsToMeasurementList(string[] responseLines)
     {
-        measurementList.Clear();
+        instrument.ClearMeasurementList();
         foreach (string line in responseLines)
         {
             if (line.Length > 0)
@@ -56,7 +55,7 @@ public class GetMeasurementData : MonoBehaviour
 
                 string[] parts = line.Split(',');
                 Measurement m = CreateMeasurement(parts);
-                measurementList.Add(m);
+                instrument.AddMeasurementToList(m);
             }
         }
     }
@@ -70,11 +69,6 @@ public class GetMeasurementData : MonoBehaviour
         bool ah_active = CommonUtilities.ConvertIntToBool(CommonUtilities.TestIntFromString(parts[4]));
         Measurement m = new Measurement((uint)timestamp, valueRaw, valueScaled, al_active, ah_active);
         return m;
-    }
-
-    public List<Measurement> GetMeasurementList()
-    {
-        return measurementList;
     }
 
 }

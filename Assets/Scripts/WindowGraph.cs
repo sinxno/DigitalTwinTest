@@ -31,23 +31,11 @@ public class WindowGraph : MonoBehaviour
         nameLabel = transform.Find("nameLabel").GetComponent<TextMeshProUGUI>();
 
     }
-    public void CreateGraph(List<Measurement> measurements, Instrument instrument)
+    public void CreateGraph(Instrument instrument)
     {
         gameObject.SetActive(true);
         nameLabel.text = instrument.instrumentName;
-        List<float> valueList = new List<float>();
-        List<uint> timeStampList = new List<uint>();
-        List<bool> alarmLow = new List<bool>();
-        List<bool> alarmHigh = new List<bool>();
-        foreach (Measurement measurement in measurements)
-        {
-            valueList.Add(measurement.valueScaled);
-            timeStampList.Add(measurement.timestamp);
-            alarmHigh.Add(measurement.ah_active);
-            alarmLow.Add(measurement.al_active);
-        }
-
-        ShowGraph(valueList, timeStampList, instrument, alarmLow, alarmHigh);
+        ShowGraph(instrument);
 
     }
 
@@ -80,21 +68,21 @@ public class WindowGraph : MonoBehaviour
         return gameObject;
     }
 
-    private void ShowGraph(List<float> valueList, List<uint> timeStampList, Instrument instrument, List<bool> alarmLow, List<bool> alarmHigh)
+    private void ShowGraph(Instrument instrument)
     {
         float graphHeight = graphContainer.sizeDelta.y;
         float yMaximum = instrument.URV;
-        float xSize = graphContainer.GetComponent<RectTransform>().sizeDelta.x/(valueList.Count+1);
+        float xSize = graphContainer.GetComponent<RectTransform>().sizeDelta.x/(instrument.GetMeasurementList().Count+1);
 
         GameObject prevCircleGameObject = null;
         
-        int modulo = FindBestModulo(timeStampList.Count, 5, 2); //Dette fungerer ikke som planlagt, men fungerer
-        for (int i = 0; i < valueList.Count; i++)
+        int modulo = FindBestModulo(instrument.GetMeasurementList().Count, 5, 2); //Dette fungerer ikke som planlagt, men fungerer
+        for (int i = 0; i < instrument.GetMeasurementList().Count; i++)
         {
-            float xPosition = CreateDot(valueList, graphHeight, yMaximum, xSize, ref prevCircleGameObject, i, alarmHigh, alarmLow);
+            float xPosition = CreateDot(instrument,graphHeight, yMaximum, xSize, ref prevCircleGameObject, i);
             if (i % modulo == 0)
             {
-                CreateXLabel(timeStampList, i, xPosition);
+                CreateXLabel(instrument, i, xPosition);
                 
                 CreateXDash(xPosition);
             }
@@ -121,14 +109,14 @@ public class WindowGraph : MonoBehaviour
         dashY.anchoredPosition = new Vector2(-2, normalizedValue*graphHeight);
     }
 
-    private void CreateXLabel(List<uint> timeStampList, int i, float xPosition)
+    private void CreateXLabel(Instrument instrument, int i, float xPosition)
     {
         RectTransform labelX = Instantiate(labelTemplateX);
         graphObjects.Add(labelX.gameObject);
         labelX.SetParent(graphContainer);
         labelX.gameObject.SetActive(true);
         labelX.anchoredPosition = new Vector2(xPosition, 0);
-        DateTime dt = CommonUtilities.GetTimestampAsDatetime(timeStampList[i]);
+        DateTime dt = CommonUtilities.GetTimestampAsDatetime(instrument.GetMeasurementList()[i].timestamp);
         labelX.GetComponent<TextMeshProUGUI>().text = string.Format("{0}\n{1}", dt.ToLongTimeString(), dt.ToShortDateString());
     }
 
@@ -150,12 +138,12 @@ public class WindowGraph : MonoBehaviour
         
     }
 
-    private float CreateDot(List<float> valueList, float graphHeight, float yMaximum, float xSize, ref GameObject prevCircleGameObject, int i, List<bool> alarmHigh, List<bool> alarmLow)
+    private float CreateDot(Instrument instrument, float graphHeight, float yMaximum, float xSize, ref GameObject prevCircleGameObject, int i)
     {
         float xPosition = xSize + i * xSize;
-        float yPosition = (valueList[i] / yMaximum) * graphHeight;
+        float yPosition = (instrument.GetMeasurementList()[i].valueScaled / yMaximum) * graphHeight;
         bool alarm = false;
-        if(alarmHigh[i] || alarmLow[i]) alarm = true;
+        if(instrument.GetMeasurementList()[i].ah_active || instrument.GetMeasurementList()[i].al_active) alarm = true;
         GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), alarm);
         if (prevCircleGameObject != null)
         {
