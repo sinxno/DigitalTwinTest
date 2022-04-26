@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 2241750682646928561}
   - component: {fileID: 2241750682646928556}
   - component: {fileID: 2241750682646928557}
+  - component: {fileID: 1405618676}
+  - component: {fileID: 1405618677}
   m_Layer: 0
   m_Name: cistern_red
   m_TagString: Untagged
@@ -28,14 +30,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2241235307944346989}
-  m_LocalRotation: {x: 0.00000009974805, y: 0.70710653, z: -0.00000009974797, w: 0.70710707}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -11.03062, y: 0.29465368, z: 11.639923}
   m_LocalScale: {x: -0.940387, y: -1, z: -0.940387}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!33 &2261966097361701355
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -126,5 +128,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e82dea9664a07e458f2ec61f110aea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instrumentName: C305LT001
-  phpUrl: http://192.168.56.105/get-instrument-data-by-name.php
+  instrumentName: C305TT001
+  phpUrl: http://127.0.0.1:5555/get-instrument-data-by-name.php
+--- !u!114 &1405618676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2241235307944346989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b900ee45da38404194b07056b5fb9a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  phpUrl: http://127.0.0.1:5555/get-measurement-data-by-instrument.php
+  amountOfMeasurementPoints: 20
+--- !u!114 &1405618677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2241235307944346989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0f0ffcf985b4ea45915d2d7fa67d5c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graphUI: {fileID: 0}
